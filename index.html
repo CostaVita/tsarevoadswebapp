@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Создание объявления</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;500&display=swap');
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+        body {
+        background: var(--tg-theme-bg-color);
+        color: var(--tg-theme-text-color);
+        }
+        .body {
+        border-radius: 4px;
+        padding: 16px;
+        font-size: 16px;
+        border: 1px solid hsl(0deg 0% 80%);
+        }
+        main {
+        padding: 16px;
+        }
+        h1 {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        }
+        p {
+        margin-left: 56px;
+        margin-bottom: auto;
+        }
+        button {
+        background: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        cursor: pointer;
+        outline: none;
+        margin: 12px;
+        padding: 12px;
+        border-radius: 4px;
+        border: none;
+        }
+        button:hover {
+        background: var(--tg-theme-secondary-bg-color);
+        }
+        .form {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        max-width: 400px;
+        }
+        input {
+        width: 90%;
+        outline: none;
+        margin: 10px 5%;
+        padding: 15px 10px;
+        font-size: 14px;
+        border: 2px solid silver;
+        border-radius: 5px;
+        }
+        input:focus {
+        border-color: #db5d5d;
+        }
+        select {
+        font-size: 14px;
+        background-color: #fff;
+        border: 2px solid silver;
+        border-radius: 5px;
+        width: 90%;
+        margin: 10px 5%;
+        padding: 15px 10px;
+        }
+        textarea {
+        padding-bottom:250px ;
+        height: 150px;
+        width: 90%;
+        outline: none;
+        margin: 10px 5%;
+        padding: 15px 10px;
+        font-size: 14px;
+        border: 2px solid silver;
+        border-radius: 5px;
+        }
+        #error {
+        color: red;
+        flex-direction: column;
+        margin: 0 auto;
+        padding: 16px;
+        font-size: 16px;
+        text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <h1>Новое объявление</h1>
+    <form id="form" enctype="multipart/form-data">
+        <select name="category" id="ad-category" required>
+            <option disabled selected value> Категория объявления</option>
+            <option value="sell">Продам</option>
+            <option value="buy">Куплю</option>
+            <option value="service">Услуги</option>
+            <option value="estate">Недвижимость</option>
+            <option value="clothes">Одежда</option>
+            <option value="free">Даром</option>
+        </select>
+        <input type="number" placeholder="Цена" id="price" required>
+        <textarea id="textComment" name="description" placeholder="Описание"></textarea>
+        <div id="error"></div>
+        <div class="d-grid gap-2">
+            <button id="add_photo">Добавить фото</button>
+            <button id="send">Разместить объявление без фото</button>
+        </div>
+    </form>
+</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+    let tg = window.Telegram.WebApp;
+    let send_ad = document.getElementById("send")
+    let add_ph = document.getElementById("add_photo");
+    tg.expand();
+
+    send_ad.addEventListener("click", () => {
+        let category = document.getElementById("ad-category").value;
+        let price = document.getElementById("price").value;
+        let textComment = document.getElementById("textComment").value;
+        let s = document.getElementById("send").id;
+        document.getElementById("error").innerText = '';
+
+        if (price <= 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Цена должна быть больше 0!";
+            return false;
+        }
+
+        if (textComment.length == 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Необходимо добавить описание!";
+            return false;
+        }
+
+        if (category.length == 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Необходимо выбрать категорию!";
+            return false;
+        }
+
+
+        let data = {
+            category: category,
+            price: price,
+            textComment: textComment,
+            botaction: s}
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    });
+
+
+    add_ph.addEventListener("click", () => {
+        let category = document.getElementById("ad-category").value;
+        let price = document.getElementById("price").value;
+        let textComment = document.getElementById("textComment").value;
+        let s = document.getElementById("add_photo").id;
+        document.getElementById("error").innerText = '';
+
+        if (price <= 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Цена должна быть больше 0!";
+            return false;
+        }
+
+        if (textComment.length == 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Необходимо добавить описание!";
+            return false;
+        }
+
+        if (category.length == 0) {
+            event.preventDefault();
+            document.getElementById("error").innerText = "Необходимо выбрать категорию!";
+            return false;
+        }
+
+        let data = {
+            category: category,
+            price: price,
+            textComment: textComment,
+            botaction: s}
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>
