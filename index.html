@@ -134,9 +134,9 @@
         let s = document.getElementById("send").id;
         document.getElementById("error").innerText = '';
 
-        if (price <= 0) {
+        if (price < 0) {
             event.preventDefault();
-            document.getElementById("error").innerText = "Цена должна быть больше 0!";
+            document.getElementById("error").innerText = "Цена должна быть больше или равна 0!";
             return false;
         }
 
